@@ -1,0 +1,6 @@
+! Blank file in which we can put "overrides" for parameters
+ADD_DIURNAL_SW = False ! This must ONLY be used in the ice-ocean mode, NOT fully coupled mode.
+SEA_LEVEL_NUDGING_VSCALE = 0.003!   [m] default = 0.0
+                                ! If positive, calculate a scaling of precipitation + runoff so that the global
+                                ! sea-level is nudged towards zero at a rate <P+R>/vscale where vscale is this
+                                ! parameter.
