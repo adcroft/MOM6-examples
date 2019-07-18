@@ -24,7 +24,7 @@ MAX_DELTA_SRESTORE = 5.0        !   [PSU or g kg-1] default = 999.0
 USE_NET_FW_ADJUSTMENT_SIGN_BUG = False !   [Boolean] default = True
                                 ! If true, use the wrong sign for the adjustment to
                                 ! the net fresh-water.
-SEA_LEVEL_NUDGING_VSCALE = 1.e60 !   [m] default = 0.0
+SEA_LEVEL_NUDGING_VSCALE = 1.E60 !   [m] default = 0.0
                                 ! If positive, calculate a virtual precipitation proportional toprecip+runoff so
                                 ! that the global sea-level is nudged towardszero at a rate <P+R>/d where d is
                                 ! this parameter.

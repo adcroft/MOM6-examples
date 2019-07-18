@@ -68,7 +68,7 @@ ICE_BULK_SALINITY = 0.0         !   [g/kg] default = 4.0
 ICE_RELATIVE_SALINITY = 0.1     !   [nondim] default = 0.0
                                 ! The initial salinity of sea ice as a fraction of the
                                 ! salinity of the seawater from which it formed.
-SEA_LEVEL_NUDGING_VSCALE = 0.003 !   [m] default = 0.0
+SEA_LEVEL_NUDGING_VSCALE = 0.001 !   [m] default = 0.0
                                 ! If positive, calculate a scaling of precipitation + runoff so that the global
                                 ! sea-level is nudged towards zero at a rate <P+R>/vscale where vscale is this
                                 ! parameter.

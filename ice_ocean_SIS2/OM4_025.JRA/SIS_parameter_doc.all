@@ -286,7 +286,7 @@ DO_ICE_RESTORE = False          !   [Boolean] default = False
                                 ! If true, restore the sea ice state toward climatology.
 NUDGE_SEA_ICE = False           !   [Boolean] default = False
                                 ! If true, constrain the sea ice concentrations using observations.
-SEA_LEVEL_NUDGING_VSCALE = 0.003 !   [m] default = 0.0
+SEA_LEVEL_NUDGING_VSCALE = 0.001 !   [m] default = 0.0
                                 ! If positive, calculate a scaling of precipitation + runoff so that the global
                                 ! sea-level is nudged towards zero at a rate <P+R>/vscale where vscale is this
                                 ! parameter.
