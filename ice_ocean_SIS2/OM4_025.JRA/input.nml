@@ -85,7 +85,7 @@
     debug=.false.,
     really_debug=.false.,
     use_slow_find=.true.,
-    add_weight_to_ocean=.true.,
+    add_weight_to_ocean=.false.,
     passive_mode=.false.,
     generate_test_icebergs=.false.,
     speed_limit=0.,
