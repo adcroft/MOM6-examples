@@ -16,7 +16,7 @@ MPIRUN ?= srun -mblock --exclusive
 SHELL = bash
 COMPILERS ?= gnu intel pgi cray
 MPTH ?= $(dir $(firstword $(MAKEFILE_LIST)))
-MANIFEST ?= $(MPTH)manifest.mk
+MANIFEST ?= $(CONFIGS)/manifest.mk
 
 all:
 	time make -f $(MPTH)Makefile.run gnu_all -s -j
@@ -34,6 +34,10 @@ include $(MANIFEST)
 
 MODE ?= repro
 MEMORY ?= dynamic_symmetric
+
+# How to build the manifest
+$(MANIFEST): $(MPTH)excluded-expts.txt
+	bash $(MPTH)/generate_manifest.sh $(CONFIGS) $< > $@
 
 ifeq ($(MEMORY),static)
 # Static pathway for building ocean.stats.*

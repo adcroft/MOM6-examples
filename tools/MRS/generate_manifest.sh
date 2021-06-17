@@ -1,10 +1,23 @@
 #!/bin/bash
 
 # Generates Makefile rules to set NPES macro for experiments
+# Usage:
+#   bash generate_manifest.sh PATH_TO_MOM6_EXAMPLES [PATH_TO_EXLUDE_LIST]
+
+if [[ "$#" -gt 2 ]]; then
+  echo $0: Too many arguments
+  exit 911
+fi
+if [[ "$#" -lt 1 ]]; then
+  echo $0: Must specify path to configuration repository
+  exit 999
+fi
+# Always works from top of MOM6-examples (first argument)
+cd $1
 
 # Path to exclude file
-if [[ "$#" -gt 0 ]]; then
-  EXCLUDED=$1
+if [[ "$#" -gt 1 ]]; then
+  EXCLUDED=$2
 else
   EXCLUDED=tools/MRS/excluded-expts.txt
 fi

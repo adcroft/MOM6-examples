@@ -2,4 +2,5 @@ parameter_files:
   tags:
     - ncrc4
   script:
+    - git submodule sync --recursive && git submodule update --init --recursive
     - make -f tools/MRS/Makefile m6e-pipeline -j

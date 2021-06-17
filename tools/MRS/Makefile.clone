@@ -1,15 +1,8 @@
-# Executable targets: build/compiler/mode/mom6_memory/mom6_configuration/MOM6
+# Clones source code
 #
-#   compiler = gnu, intel, pgi, cray, ...
-#   mode = repro, debug, coverage, ...
-#   If mom6_memory = dynamic or dynamic_symmetric
-#     mom6_configuration = ocean_only, ice_ocean_SIS, ice_ocean_SIS2, land_ice_ocean_LM3_SIS2, coupled_AM2_LM3_SIS, coupled_AM2_LM3_SIS2
-#   If mom6_memory = static
-#     mom6_configuration = ocean_only/DOME ocean_only/benchmark ocean_only/double_gyre ...
-#
-# Intermediate targets:
-#   build/compiler/mode/%/lib%.a  for % = fms, icebergs, ice_ocean_extras, am2, lm3
-#   build/compiler/mode/mom6_memory/%/lib%.a  for % = mom6, sis2
+# Targets:
+#   clone:      fetches MOM6-examples and sub-modules
+#   clone_gfdl: fetches source codes for coupled model components (needs GFDL access)
 
 # Include local configs if present
 -include config.mk
@@ -75,7 +68,7 @@ $(foreach r,AM2/atmos_shared_am3 AM2/atmos_drivers AM2/atmos_fv_dynamics sis1 LM
 	cd $@; git checkout $(TAG)
 #find $(LM3)/land_lad2 -type f -name \*.F90 -exec cpp -Duse_libMPI -Duse_netCDF -DSPMD -Duse_LARGEFILE -C -v -I $(FMS_SRC)/include -o '{}'.cpp {} \;
 $(SRC_DIR)/LM3/land_lad2_cpp: $(SRC_DIR)/LM3/land_lad2
-	find $(LM3)/land_lad2 -type f -name \*.F90 -exec cpp -Duse_libMPI -Duse_netCDF -nostdinc -C -v -I $(FMS_SRC)/include -o '{}'.cpp {} \;
+	find $(LM3)/land_lad2 -type f -name \*.F90 -exec cpp -Duse_libMPI -Duse_netCDF -nostdinc -C -v -I $(FMS_SRC)/include -o '{}'.cpp {} \; > log.cpp_lad2 2>&1
 	find $(LM3)/land_lad2 -type f -name \*.F90.cpp -exec rename .F90.cpp .f90 {} \;
 	mkdir -p $(LM3)/land_lad2_cpp
 	find $(LM3)/land_lad2 -type f -name \*.f90 -exec mv {} $(LM3)/land_lad2_cpp/ \;

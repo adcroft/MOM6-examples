@@ -1,4 +1,7 @@
-# Executable targets: build/compiler/mode/mom6_memory/mom6_configuration/MOM6
+# Construct and run restart tests
+# - Job 01 is first half
+# - Job 12 is second half
+# - Job 02 is full length
 #
 #   compiler = gnu, intel, pgi, cray, ...
 #   mode = repro, debug, coverage, ...
@@ -10,12 +13,12 @@
 
 CONFIGS ?= .
 BUILD ?= build
-MPIRUN? = srun -mblock --exclusive
+MPIRUN ?= srun -mblock --exclusive
 SHELL = bash
 COMPILERS ?= gnu intel pgi
 LOG = > log
 MPTH ?= $(dir $(firstword $(MAKEFILE_LIST)))
-MANIFEST ?= $(MPTH)manifest.mk
+MANIFEST ?= $(CONFIGS)/manifest.mk
 
 RESTART_SKIP ?= circle_obcs|tracer_mixing|unit_test|mixed_layer_restrat_2d
 
