@@ -18,7 +18,7 @@ m6e-pipeline:
 	time make -f tools/MRS/Makefile manifest
 # Run standard tests
 	(echo '#!/bin/tcsh';echo 'make -f tools/MRS/Makefile.run gnu_all MEMORY=dynamic_symmetric -s -j') > job.sh
-	#sbatch --clusters=c3,c4 --nodes=25 --time=0:08:00 --account=gfdl_o --qos=debug --job-name=mom6_examples_tests --output=log.$CI_PIPELINE_ID --wait job.sh
+	sbatch --clusters=c3,c4 --nodes=25 --time=0:08:00 --account=gfdl_o --qos=debug --job-name=mom6_examples_tests --output=log.$$CI_PIPELINE_ID --wait job.sh
 # Check status of doc files
 	git status
 	git diff --exit-code
