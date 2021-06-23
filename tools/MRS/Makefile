@@ -74,44 +74,42 @@ $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz: $(CACHE_DIR)/build-gnu-repro-$(CI_PI
 	sbatch --clusters=c3,c4 --nodes=30 --time=0:42:00 --account=gfdl_o --qos=debug --job-name=mom6_full_regression --output=log.$(CI_PIPELINE_ID) --wait job.sh
 	cat log.$(CI_PIPELINE_ID)
 	test -f MOM6-examples/results.ignore/restart_stats_gnu.tar.gz
-	cd MOM6-examples/results.ignore && time tar zvcf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz *.tar.gz
+	time tar zvcf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz MOM6-examples/results.ignore
 # Tests
 # - unpack cached ocean.stats files
-stats-pipeline-test-gnu-nonsym: | MOM6-examples/results.ignore
-	cd MOM6-examples/results.ignore && time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
+stats-pipeline-test-gnu-nonsym:
+	time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
 	cd MOM6-examples && make -f tools/MRS/Makefile.tests gnu_non_symmetric
-stats-pipeline-test-intel-nonsym: | MOM6-examples/results.ignore
-	cd MOM6-examples/results.ignore && time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
+stats-pipeline-test-intel-nonsym:
+	time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
 	cd MOM6-examples && make -f tools/MRS/Makefile.tests intel_non_symmetric
-stats-pipeline-test-pgi-nonsym: | MOM6-examples/results.ignore
-	cd MOM6-examples/results.ignore && time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
+stats-pipeline-test-pgi-nonsym:
+	time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
 	cd MOM6-examples && make -f tools/MRS/Makefile.tests pgi_non_symmetric
-stats-pipeline-test-gnu-sym: | MOM6-examples/results.ignore
-	cd MOM6-examples/results.ignore && time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
+stats-pipeline-test-gnu-sym:
+	time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
 	cd MOM6-examples && make -f tools/MRS/Makefile.tests gnu_symmetric
-stats-pipeline-test-intel-sym: | MOM6-examples/results.ignore
-	cd MOM6-examples/results.ignore && time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
+stats-pipeline-test-intel-sym:
+	time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
 	cd MOM6-examples && make -f tools/MRS/Makefile.tests intel_symmetric
-stats-pipeline-test-pgi-sym: | MOM6-examples/results.ignore
-	cd MOM6-examples/results.ignore && time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
+stats-pipeline-test-pgi-sym:
+	time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
 	cd MOM6-examples && make -f tools/MRS/Makefile.tests pgi_symmetric
-stats-pipeline-test-gnu-layout: | MOM6-examples/results.ignore
-	cd MOM6-examples/results.ignore && time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
+stats-pipeline-test-gnu-layout:
+	time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
 	cd MOM6-examples && make -f tools/MRS/Makefile.tests gnu_layout
-stats-pipeline-test-intel-layout: | MOM6-examples/results.ignore
-	cd MOM6-examples/results.ignore && time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
+stats-pipeline-test-intel-layout:
+	time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
 	cd MOM6-examples && make -f tools/MRS/Makefile.tests intel_layout
-stats-pipeline-test-pgi-layout: | MOM6-examples/results.ignore
-	cd MOM6-examples/results.ignore && time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
+stats-pipeline-test-pgi-layout:
+	time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
 	cd MOM6-examples && make -f tools/MRS/Makefile.tests pgi_layout
-stats-pipeline-test-gnu-static: | MOM6-examples/results.ignore
-	cd MOM6-examples/results.ignore && time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
+stats-pipeline-test-gnu-static:
+	time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
 	cd MOM6-examples && make -f tools/MRS/Makefile.tests gnu_static
-stats-pipeline-test-gnu-restart: | MOM6-examples/results.ignore
-	cd MOM6-examples/results.ignore && time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
+stats-pipeline-test-gnu-restart:
+	time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
 	cd MOM6-examples && make -f tools/MRS/Makefile.tests gnu_check_restarts
-MOM6-examples/results.ignore:
-	mkdir -p $@
 
 
 # `make build` to build all executables
