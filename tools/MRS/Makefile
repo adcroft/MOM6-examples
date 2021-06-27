@@ -48,7 +48,7 @@ mom6-pipeline-run:
 	time make -f tools/MRS/Makefile.clone .datasets
 	@echo -e "\e[0Ksection_end:`date +%s`:uncache\r\e[0K"
 	(echo '#!/bin/tcsh';echo 'time make -f tools/MRS/Makefile.tests all COMPILERS=gnu') > job.sh
-	sbatch --clusters=c3,c4 --nodes=25 --time=0:18:00 --account=gfdl_o --qos=debug --job-name=mom6_examples_tests --output=log.$$CI_PIPELINE_ID --wait job.sh && ( echo -e "\e[0Ksection_start:`date +%s`:joblog[collapsed=true]\r\e[0KJob output" ; cat log.$$CI_PIPELINE_ID ; echo -e "\e[0Ksection_end:`date +%s`:joblog\r\e[0K" ) || ( echo -e "\e[0Ksection_start:`date +%s`:joblog[collapsed=true]\r\e[0KJob output" ; cat log.$$CI_PIPELINE_ID ; echo -e "\e[0Ksection_end:`date +%s`:joblog\r\e[0K" ; echo Job failed ; exit 911 )
+	sbatch --clusters=c3,c4 --nodes=25 --time=0:38:00 --account=gfdl_o --qos=debug --job-name=mom6_examples_tests --output=log.$$CI_PIPELINE_ID --wait job.sh && ( echo -e "\e[0Ksection_start:`date +%s`:joblog[collapsed=true]\r\e[0KJob output" ; cat log.$$CI_PIPELINE_ID ; echo -e "\e[0Ksection_end:`date +%s`:joblog\r\e[0K" ) || ( echo -e "\e[0Ksection_start:`date +%s`:joblog[collapsed=true]\r\e[0KJob output" ; cat log.$$CI_PIPELINE_ID ; echo -e "\e[0Ksection_end:`date +%s`:joblog\r\e[0K" ; echo Job failed ; exit 911 )
 	@echo -e "\e[0Ksection_start:`date +%s`:cache[collapsed=true]\r\e[0KCaching results"
 	time tar zvcf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz results.*
 	@echo -e "\e[0Ksection_end:`date +%s`:cache\r\e[0K"
