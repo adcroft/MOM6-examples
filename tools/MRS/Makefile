@@ -42,8 +42,8 @@ mom6-pipeline-run:
 	@echo -e "\e[0Ksection_start:`date +%s`:uncache[collapsed=true]\r\e[0KUncaching executables"
 	tar vzxf $(CACHE_DIR)/build-repro-gnu-$(CI_PIPELINE_ID).tgz
 	tar vzxf $(CACHE_DIR)/build-static-gnu-$(CI_PIPELINE_ID).tgz
-	#tar vzxf $(CACHE_DIR)/build-repro-intel-$(CI_PIPELINE_ID).tgz
-	#tar vzxf $(CACHE_DIR)/build-repro-pgi-$(CI_PIPELINE_ID).tgz
+	tar vzxf $(CACHE_DIR)/build-repro-intel-$(CI_PIPELINE_ID).tgz
+	tar vzxf $(CACHE_DIR)/build-repro-pgi-$(CI_PIPELINE_ID).tgz
 	bash tools/MRS/generate_manifest.sh . tools/MRS/excluded-expts.txt > manifest.mk
 	time make -f tools/MRS/Makefile.clone .datasets
 	@echo -e "\e[0Ksection_end:`date +%s`:uncache\r\e[0K"
@@ -103,22 +103,30 @@ $(CACHE_DIR)/build-%-$(CI_PIPELINE_ID).tgz:
 	@echo -e "\e[0Ksection_end:`date +%s`:build-$*\r\e[0K"
 	(test -w $(@D)/ && time tar zvcf $@ `find build/$(lastword $(subst -, ,$*)) -name MOM6`) || echo Not tarring
 pipeline-build-gnu-oceanonly-nolibs:
-	time make -f tools/MRS/Makefile $(subst -,_,$*) -s -j
+	@echo -e "\e[0Ksection_start:`date +%s`:clone-$*[collapsed=true]\r\e[0KCloning submodules"
+	#time make -f tools/MRS/Makefile $(subst -,_,$*) -s -j
 	test -d src/FMS1/fms && echo Skipping submodule update || ( git submodule init && git submodule update )
 	test -f ../../pkg/CVMix-src/README.md || (cd ../.. && git submodule init && git submodule update)
+	@echo -e "\e[0Ksection_end:`date +%s`:clone-$*\r\e[0K"
+	@echo -e "\e[0Ksection_start:`date +%s`:build-$*[collapsed=true]\r\e[0KCompiling executables for $*"
 	make -f tools/MRS/Makefile.build build/gnu/env
 	cd build/gnu && ../../src/mkmf/bin/list_paths -l ../../../../config_src/{drivers/solo_driver,memory/dynamic_symmetric,infra/FMS1,ext*} ../../../../src ../../src/FMS
 	cd build/gnu && sed -i '/FMS\/.*\/test_/d' path_names
 	cd build/gnu && ../../src/mkmf/bin/mkmf -t ../../src/mkmf/templates/ncrc-gnu.mk -p MOM6 -c"-Duse_libMPI -Duse_netCDF" path_names
 	cd build/gnu && time (source ./env ; make NETCDF=3 REPRO=1 MOM6 -s -j)
+	@echo -e "\e[0Ksection_end:`date +%s`:build-$*\r\e[0K"
 pipeline-build-gnu-iceocean-nolibs:
+	@echo -e "\e[0Ksection_start:`date +%s`:clone-$*[collapsed=true]\r\e[0KCloning submodules"
 	test -d src/FMS1/fms && echo Skipping submodule update || ( git submodule init && git submodule update )
 	test -f ../../pkg/CVMix-src/README.md || (cd ../.. && git submodule init && git submodule update)
+	@echo -e "\e[0Ksection_end:`date +%s`:clone-$*\r\e[0K"
+	@echo -e "\e[0Ksection_start:`date +%s`:build-$*[collapsed=true]\r\e[0KCompiling executables for $*"
 	make -f tools/MRS/Makefile.build build/gnu/env
 	cd build/gnu && ../../src/mkmf/bin/list_paths -l ../../../../config_src/{drivers/FMS_cap,memory/dynamic_nonsymmetric,infra/FMS1,ext*} ../../../../src ../../src/{FMS,coupler,SIS2,icebergs,ice_param,land_null,atmos_null}
 	cd build/gnu && sed -i '/FMS\/.*\/test_/d' path_names
 	cd build/gnu && ../../src/mkmf/bin/mkmf -t ../../src/mkmf/templates/ncrc-gnu.mk -p MOM6 -c"-Duse_libMPI -Duse_netCDF -D_USE_LEGACY_LAND_ -Duse_AM3_physics" path_names
 	cd build/gnu && time (source ./env ; make NETCDF=3 REPRO=1 MOM6 -s -j)
+	@echo -e "\e[0Ksection_end:`date +%s`:build-$*\r\e[0K"
 
 # Gaea-stats-MOM6-examples gitlab pipelines (to be run from above MOM6-examples)
 # Note: multiple targets for each job.
