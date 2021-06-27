@@ -41,8 +41,8 @@ $(RESULTS)/$(1)_$(2).tar.gz:
 	time make -f tools/MRS/Makefile.run $(3) $(MINUS_S) $(MINUS_J)
 	@echo -n '$(1) $2 finished at ' && date
 	mkdir -p $$(@D)
-	tar zcf $$@ `find [oilc]*/ -name ocean.stats.$(2)`
-	tar zcf $$(@D)/params_$$(@F) `find [oilc]*/ -name "*_parameter_doc.*" -o -name "*available_diags*"`
+	tar zvcf $$@ `find [oilc]*/ -name ocean.stats.$(2)`
+	tar zvcf $$(@D)/params_$$(@F) `find [oilc]*/ -name "*_parameter_doc.*" -o -name "*available_diags*"`
 	@echo -e "\e[0Ksection_end:`date +%s`:$@\r\e[0K"
 endef
 $(foreach c,$(COMPILERS),$(eval $(call collect-regressions,non_symmetric,$(c),$(c)_all)))
@@ -58,8 +58,10 @@ clean:
 # 1 - compiler, 2 - tar file prefix
 define check-regressions
 $(1)_$(2): $(RESULTS)/true_$(1).md5 $(RESULTS)/$(2)_$(1).tar.gz
+	@echo -e "\e[0Ksection_start:`date +%s`:$@[collapsed=true]\r\e[0KUncache results $@"
 	@mkdir -p $(RESULTS)/$$@
-	cd $(RESULTS)/$$@ ; tar zxf ../$(2)_$(1).tar.gz
+	cd $(RESULTS)/$$@ ; tar zvxf ../$(2)_$(1).tar.gz
+	@echo -e "\e[0Ksection_end:`date +%s`:$@\r\e[0K"
 	cd $(RESULTS)/$$@ ; md5sum -c ../true_$(1).md5
 endef
 $(foreach c,$(COMPILERS),$(eval $(call check-regressions,$(c),symmetric)))
@@ -69,24 +71,30 @@ $(foreach c,$(COMPILERS),$(eval $(call check-regressions,$(c),non_symmetric)))
 # 1 - compiler, 2 - tar file prefix
 define check-static-regressions
 $(1)_$(2): $(RESULTS)/true_$(1).md5 $(RESULTS)/$(2)_$(1).tar.gz $(RESULTS)/symmetric_$(1).tar.gz
+	@echo -e "\e[0Ksection_start:`date +%s`:$@[collapsed=true]\r\e[0KUncache results $@"
 	@mkdir -p $(RESULTS)/$$@
-	cd $(RESULTS)/$$@ ; tar zxf ../symmetric_$(1).tar.gz
-	cd $(RESULTS)/$$@ ; tar zxf ../$(2)_$(1).tar.gz
+	cd $(RESULTS)/$$@ ; tar zvxf ../symmetric_$(1).tar.gz
+	cd $(RESULTS)/$$@ ; tar zvxf ../$(2)_$(1).tar.gz
+	@echo -e "\e[0Ksection_end:`date +%s`:$@\r\e[0K"
 	cd $(RESULTS)/$$@ ; md5sum -c ../true_$(1).md5
 endef
 $(foreach c,$(COMPILERS),$(eval $(call check-static-regressions,$(c),static)))
 
 # Unpacks non-symmetric regressions and compares to symmetric regressions
 # 1 - compiler
-define check-layout-reproducibility
-$(1)_layout:
+define check-memory-reproducibility
+$(1)_memory:
+	@echo -e "\e[0Ksection_start:`date +%s`:$@[collapsed=true]\r\e[0KUncache results $@"
 	@mkdir -p $(RESULTS)/$$@
-	cd $(RESULTS)/$$@ ; tar zxf ../non_symmetric_$(1).tar.gz
+	cd $(RESULTS)/$$@ ; tar zvxf ../non_symmetric_$(1).tar.gz
+	@echo -e "\e[0Ksection_end:`date +%s`:$@\r\e[0K"
 	cd $(RESULTS)/$$@ ; md5sum `find [oilc]* -name ocean.stats.$(1)` > $(1).md5
-	cd $(RESULTS)/$$@ ; tar zxf ../symmetric_$(1).tar.gz
+	@echo -e "\e[0Ksection_start:`date +%s`:$@[collapsed=true]\r\e[0KUncache results $@"
+	cd $(RESULTS)/$$@ ; tar zvxf ../symmetric_$(1).tar.gz
+	@echo -e "\e[0Ksection_end:`date +%s`:$@\r\e[0K"
 	cd $(RESULTS)/$$@ ; md5sum -c $(1).md5
 endef
-$(foreach c,$(COMPILERS),$(eval $(call check-layout-reproducibility,$(c))))
+$(foreach c,$(COMPILERS),$(eval $(call check-memory-reproducibility,$(c))))
 
 $(RESULTS)/true_%.md5:
 	mkdir -p $(@D)
@@ -105,7 +113,7 @@ $(RESULTS)/restart_stats_$(1).tar.gz:
 	time make -f tools/MRS/Makefile.restart $(1)_ocean_only $(MINUS_S) $(MINUS_J) RESTART_STAGE=12
 	time make -f tools/MRS/Makefile.restart $(1)_ice_ocean_SIS2 $(MINUS_S) $(MINUS_J) RESTART_STAGE=12
 	mkdir -p $(RESULTS)
-	tar zcf $$@ `find [oilc]*/ -path "*/??.ignore/*" -name ocean.stats.$(1)`
+	tar zvcf $$@ `find [oilc]*/ -path "*/??.ignore/*" -name ocean.stats.$(1)`
 	@echo -e "\e[0Ksection_end:`date +%s`:$@\r\e[0K"
 endef
 $(foreach c,$(COMPILERS),$(eval $(call run-restart-tests,$(c))))
@@ -114,7 +122,9 @@ $(foreach c,$(COMPILERS),$(eval $(call run-restart-tests,$(c))))
 # 1 - compiler
 define test-restarts
 $(1)_check_restarts:
-	tar zxf $(RESULTS)/restart_stats_$(1).tar.gz
+	@echo -e "\e[0Ksection_start:`date +%s`:$@[collapsed=true]\r\e[0KUncache results $@"
+	tar zvxf $(RESULTS)/restart_stats_$(1).tar.gz
+	@echo -e "\e[0Ksection_end:`date +%s`:$@\r\e[0K"
 	make -f tools/MRS/Makefile.restart restart_$(1)_ocean_only restart_$(1)_ice_ocean_SIS2 $(MINUS_S) -k
 endef
 $(foreach c,$(COMPILERS),$(eval $(call test-restarts,$(c))))
@@ -123,7 +133,9 @@ $(foreach c,$(COMPILERS),$(eval $(call test-restarts,$(c))))
 # 1 - compiler, 2 - tar file prefix
 define check-params
 params_$(1)_$(2):
-	tar zxf $(RESULTS)/params_$(2)_$(1).tar.gz
+	@echo -e "\e[0Ksection_start:`date +%s`:$@[collapsed=true]\r\e[0KUncache params $@"
+	tar zvxf $(RESULTS)/params_$(2)_$(1).tar.gz
+	@echo -e "\e[0Ksection_end:`date +%s`:$@\r\e[0K"
 	git diff --exit-code [oicl]*
 endef
 $(foreach c,$(COMPILERS),$(eval $(call check-params,$(c),symmetric)))
