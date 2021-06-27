@@ -26,8 +26,8 @@ m6e-pipeline:
 	@echo -e "\e[0Ksection_start:`date +%s`:build[collapsed=true]\r\e[0KCompiling executables"
 	time make -f tools/MRS/Makefile.build repro_gnu -s -j
 	@echo -e "\e[0Ksection_end:`date +%s`:build\r\e[0K"
-	bash tools/MRS//generate_manifest.sh . tools/MRS/excluded-expts.txt > manifest.mk
-	(echo '#!/bin/tcsh';echo 'make -f tools/MRS/Makefile.run gnu_all MEMORY=dynamic_symmetric -s -j') > job.sh
+	bash tools/MRS/generate_manifest.sh . tools/MRS/excluded-expts.txt > manifest.mk
+	(echo '#!/bin/tcsh';echo 'time make -f tools/MRS/Makefile.run gnu_all MEMORY=dynamic_symmetric -s -j') > job.sh
 	sbatch --clusters=c3,c4 --nodes=25 --time=0:08:00 --account=gfdl_o --qos=debug --job-name=mom6_examples_tests --output=log.$$CI_PIPELINE_ID --wait job.sh && ( echo -e "\e[0Ksection_start:`date +%s`:joblog[collapsed=true]\r\e[0KJob output" ; cat log.$$CI_PIPELINE_ID ; echo -e "\e[0Ksection_end:`date +%s`:joblog\r\e[0K" ) || ( echo -e "\e[0Ksection_start:`date +%s`:joblog[collapsed=true]\r\e[0KJob output" ; cat log.$$CI_PIPELINE_ID ; echo -e "\e[0Ksection_end:`date +%s`:joblog\r\e[0K" ; echo Job failed ; exit 911 )
 	git status
 	git diff --exit-code
@@ -41,13 +41,13 @@ m6e-pipeline:
 mom6-pipeline-run:
 	@echo -e "\e[0Ksection_start:`date +%s`:uncache[collapsed=true]\r\e[0KUncaching executables"
 	tar vzxf $(CACHE_DIR)/build-repro-gnu-$(CI_PIPELINE_ID).tgz
-	#tar vzxf $(CACHE_DIR)/build-static-gnu-$(CI_PIPELINE_ID).tgz
+	tar vzxf $(CACHE_DIR)/build-static-gnu-$(CI_PIPELINE_ID).tgz
 	#tar vzxf $(CACHE_DIR)/build-repro-intel-$(CI_PIPELINE_ID).tgz
 	#tar vzxf $(CACHE_DIR)/build-repro-pgi-$(CI_PIPELINE_ID).tgz
-	bash tools/MRS//generate_manifest.sh . tools/MRS/excluded-expts.txt > manifest.mk
+	bash tools/MRS/generate_manifest.sh . tools/MRS/excluded-expts.txt > manifest.mk
 	time make -f tools/MRS/Makefile.clone .datasets
 	@echo -e "\e[0Ksection_end:`date +%s`:uncache\r\e[0K"
-	(echo '#!/bin/tcsh';echo 'make -f tools/MRS/Makefile.tests all COMPILERS=gnu') > job.sh
+	(echo '#!/bin/tcsh';echo 'time make -f tools/MRS/Makefile.tests all COMPILERS=gnu') > job.sh
 	sbatch --clusters=c3,c4 --nodes=25 --time=0:18:00 --account=gfdl_o --qos=debug --job-name=mom6_examples_tests --output=log.$$CI_PIPELINE_ID --wait job.sh && ( echo -e "\e[0Ksection_start:`date +%s`:joblog[collapsed=true]\r\e[0KJob output" ; cat log.$$CI_PIPELINE_ID ; echo -e "\e[0Ksection_end:`date +%s`:joblog\r\e[0K" ) || ( echo -e "\e[0Ksection_start:`date +%s`:joblog[collapsed=true]\r\e[0KJob output" ; cat log.$$CI_PIPELINE_ID ; echo -e "\e[0Ksection_end:`date +%s`:joblog\r\e[0K" ; echo Job failed ; exit 911 )
 	@echo -e "\e[0Ksection_start:`date +%s`:cache[collapsed=true]\r\e[0KCaching results"
 	time tar zvcf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz results.*
@@ -103,27 +103,7 @@ pipeline-build-gnu-iceocean-nolibs:
 stats-pipeline-pre-script:
 	echo Cache directory env var = $(CACHE_DIR)
 	test -f MOM6-examples/README.md || git submodule init && git submodule update
-# Build gnu repro executables
-# - compile dynamic executables
-# - compile static executables
-# - cache executables in a tarfile
-#stats-pipeline-build-repro-gnu: $(CACHE_DIR)/build-gnu-repro-$(CI_PIPELINE_ID).tgz
-#$(CACHE_DIR)/build-gnu-repro-$(CI_PIPELINE_ID).tgz:
-#	cd MOM6-examples && time make -f tools/MRS/Makefile.build repro_gnu -s -j
-#	cd MOM6-examples && time make -f tools/MRS/Makefile.build static_gnu -s -j
-#	time tar zvcf $@ `find MOM6-examples/build/gnu/repro -name MOM6`
-#stats-pipeline-build-repro-intel: $(CACHE_DIR)/build-intel-repro-$(CI_PIPELINE_ID).tgz
-#$(CACHE_DIR)/build-intel-repro-$(CI_PIPELINE_ID).tgz:
-#	cd MOM6-examples && time make -f tools/MRS/Makefile.build repro_intel -s -j
-#	time tar zvcf $@ `find MOM6-examples/build/intel/repro -name MOM6`
-#stats-pipeline-build-repro-pgi: $(CACHE_DIR)/build-pgi-repro-$(CI_PIPELINE_ID).tgz
-#$(CACHE_DIR)/build-pgi-repro-$(CI_PIPELINE_ID).tgz:
-#	cd MOM6-examples && time make -f tools/MRS/Makefile.build repro_pgi -s -j
-#	time tar zvcf $@ `find MOM6-examples/build/pgi/repro -name MOM6`
-#stats-pipeline-build-debug-gnu: $(CACHE_DIR)/build-gnu-debug-$(CI_PIPELINE_ID).tgz
-#$(CACHE_DIR)/build-gnu-debug-$(CI_PIPELINE_ID).tgz:
-#	cd MOM6-examples && time make -f tools/MRS/Makefile.build debug_gnu -s -j
-#	time tar zvcf $@ `find MOM6-examples/build/gnu/debug -name MOM6`
+
 # Run model
 # - Fetch executables from cache
 # - Create the manifest
@@ -136,14 +116,15 @@ $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz:
 	time tar vzxf $(CACHE_DIR)/build-repro-gnu-$(CI_PIPELINE_ID).tgz
 	time tar vzxf $(CACHE_DIR)/build-repro-intel-$(CI_PIPELINE_ID).tgz
 	time tar vzxf $(CACHE_DIR)/build-repro-pgi-$(CI_PIPELINE_ID).tgz
-	bash tools/MRS//generate_manifest.sh . tools/MRS/excluded-expts.txt > manifest.mk
+	bash tools/MRS/generate_manifest.sh . tools/MRS/excluded-expts.txt > manifest.mk
 	make -f tools/MRS/Makefile.clone .datasets
 	@echo -e "\e[0Ksection_end:`date +%s`:uncache\r\e[0K"
-	(echo '#!/bin/tcsh';echo 'make -f tools/MRS/Makefile.run all -s -j') > job.sh
+	(echo '#!/bin/tcsh';echo 'time make -f tools/MRS/Makefile.run all -s -j') > job.sh
 	sbatch --clusters=c3,c4 --nodes=30 --time=0:42:00 --account=gfdl_o --qos=debug --job-name=mom6_full_regression --output=log.$(CI_PIPELINE_ID) --wait job.sh && (echo Job returned normally) || ( echo -e "\e[0Ksection_start:`date +%s`:job-log[collapsed=true]\r\e[0Kjob-log" ; cat log.$(CI_PIPELINE_ID) ; echo -e "\e[0Ksection_end:`date +%s`:job_log\r\e[0K" ; echo Job failed ; exit 911 )
 	@echo -e "\e[0Ksection_start:`date +%s`:cache[collapsed=true]\r\e[0KCaching results"
 	time tar zvcf $@ `find . -name *.stats.*[a-z][a-z][a-z]`
 	@echo -e "\e[0Ksection_end:`date +%s`:cache\r\e[0K"
+
 # Tests
 # - unpack cached ocean.stats files
 stats-pipeline-test:
