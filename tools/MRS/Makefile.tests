@@ -17,15 +17,15 @@ NON_SYM_TAR_FILES = $(foreach c,$(COMPILERS),$(RESULTS)/non_symmetric_$(c).tar.g
 TAR_FILES = $(SYM_TAR_FILES) $(NON_SYM_TAR_FILES) $(RESULTS)/restart_stats_gnu.tar.gz
 
 all:
-	@echo -e "\e[0Ksection_start:`date +%s`:symmetric_tests[collapsed=true]\r\e[0KSymmetric tests"
+	#@echo -e "\e[0Ksection_start:`date +%s`:symmetric_tests[collapsed=true]\r\e[0KSymmetric tests"
 	time make -f $(MPTH)Makefile.tests $(SYM_TAR_FILES)
-	@echo -e "\e[0Ksection_end:`date +%s`:symmetric_tests\r\e[0K"
-	@echo -e "\e[0Ksection_start:`date +%s`:nonsymmetric_tests[collapsed=true]\r\e[0KNon-symmetric tests"
+	#@echo -e "\e[0Ksection_end:`date +%s`:symmetric_tests\r\e[0K"
+	#@echo -e "\e[0Ksection_start:`date +%s`:nonsymmetric_tests[collapsed=true]\r\e[0KNon-symmetric tests"
 	time make -f $(MPTH)Makefile.tests $(NON_SYM_TAR_FILES)
-	@echo -e "\e[0Ksection_end:`date +%s`:nonsymmetric_tests\r\e[0K"
-	@echo -e "\e[0Ksection_start:`date +%s`:gnu_restart_tests[collapsed=true]\r\e[0KGnu restart tests"
+	#@echo -e "\e[0Ksection_end:`date +%s`:nonsymmetric_tests\r\e[0K"
+	#@echo -e "\e[0Ksection_start:`date +%s`:gnu_restart_tests[collapsed=true]\r\e[0KGnu restart tests"
 	time make -f $(MPTH)Makefile.tests $(RESULTS)/restart_stats_gnu.tar.gz
-	@echo -e "\e[0Ksection_end:`date +%s`:gnu_restart_tests\r\e[0K"
+	#@echo -e "\e[0Ksection_end:`date +%s`:gnu_restart_tests\r\e[0K"
 gnu: $(RESULTS)/non_symmetric_gnu.tar.gz $(RESULTS)/symmetric_gnu.tar.gz $(RESULTS)/static_gnu.tar.gz
 intel: $(RESULTS)/non_symmetric_intel.tar.gz $(RESULTS)/symmetric_intel.tar.gz
 pgi: $(RESULTS)/non_symmetric_pgi.tar.gz $(RESULTS)/symmetric_pgi.tar.gz
