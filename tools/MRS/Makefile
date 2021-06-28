@@ -83,6 +83,36 @@ mom6-pipeline-test-params_gnu_symmetric:
 	time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
 	@echo -e "\e[0Ksection_end:`date +%s`:uncache\r\e[0K"
 	make -f tools/MRS/Makefile.tests params_gnu_symmetric
+mom6-pipeline-test-intel_non_symmetric:
+	@echo -e "\e[0Ksection_start:`date +%s`:uncache[collapsed=true]\r\e[0KUncaching results"
+	time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
+	@echo -e "\e[0Ksection_end:`date +%s`:uncache\r\e[0K"
+	make -f tools/MRS/Makefile.tests intel_non_symmetric
+mom6-pipeline-test-intel_symmetric:
+	@echo -e "\e[0Ksection_start:`date +%s`:uncache[collapsed=true]\r\e[0KUncaching results"
+	time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
+	@echo -e "\e[0Ksection_end:`date +%s`:uncache\r\e[0K"
+	make -f tools/MRS/Makefile.tests intel_symmetric
+mom6-pipeline-test-intel_memory:
+	@echo -e "\e[0Ksection_start:`date +%s`:uncache[collapsed=true]\r\e[0KUncaching results"
+	time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
+	@echo -e "\e[0Ksection_end:`date +%s`:uncache\r\e[0K"
+	make -f tools/MRS/Makefile.tests intel_memory
+mom6-pipeline-test-pgi_non_symmetric:
+	@echo -e "\e[0Ksection_start:`date +%s`:uncache[collapsed=true]\r\e[0KUncaching results"
+	time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
+	@echo -e "\e[0Ksection_end:`date +%s`:uncache\r\e[0K"
+	make -f tools/MRS/Makefile.tests pgi_non_symmetric
+mom6-pipeline-test-pgi_symmetric:
+	@echo -e "\e[0Ksection_start:`date +%s`:uncache[collapsed=true]\r\e[0KUncaching results"
+	time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
+	@echo -e "\e[0Ksection_end:`date +%s`:uncache\r\e[0K"
+	make -f tools/MRS/Makefile.tests pgi_symmetric
+mom6-pipeline-test-pgi_memory:
+	@echo -e "\e[0Ksection_start:`date +%s`:uncache[collapsed=true]\r\e[0KUncaching results"
+	time tar vzxf $(CACHE_DIR)/results-$(CI_PIPELINE_ID).tgz
+	@echo -e "\e[0Ksection_end:`date +%s`:uncache\r\e[0K"
+	make -f tools/MRS/Makefile.tests pgi_memory
 
 
 # Build for all pipelines
