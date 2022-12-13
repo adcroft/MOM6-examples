@@ -1236,3 +1236,4 @@ COMPLETE_DOCUMENTATION = True   !   [Boolean] default = True
 MINIMAL_DOCUMENTATION = True    !   [Boolean] default = True
                                 ! If true, non-default run-time parameters are documented in
                                 ! MOM_parameter_doc.short .
+TEST
